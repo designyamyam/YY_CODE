@@ -295,6 +295,7 @@ header('X-Robots-Tag: noindex, nofollow');
         <li>Die neue Datei ersetzt die Speisekarte sofort auf <a href="../menue.html">yamyam-berlin.de/menue.html</a>.</li>
         <li>Die bisherige Version wird automatisch aufgehoben (die letzten <?= KEEP_VERSIONS ?> Stände) und kann unten mit einem Klick wieder online gestellt oder gelöscht werden.</li>
         <li>Wenn die Seite die alte Karte zeigt: einmal neu laden.</li>
+        <li>Fürs PDF: mit echtem Text exportieren (kein Bild-PDF aus JPGs) und „für schnelle Webanzeige optimieren“ — dann bleibt es scharf beim Zoomen und lädt am Handy schnell. Richtwert unter 5 MB.</li>
       </ul>
     </div>
 
