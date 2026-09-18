@@ -16,7 +16,8 @@ Stack: HTML/CSS/JS, Google Sheets als CMS, Hosting auf HostEurope (FTPS-Deploy v
 - Reaktion darauf: Speisekarte am 2026-06-22 auf PDF-Embed umgestellt (`menue.html` + `menue.pdf`), Sheet-Version pausiert (`menue-paused.html`, noindex).
 - Die vollständige neue Site liegt auf **Staging: http://yy.yamyam-berlin.de** (HostEurope, nur http, robots disallow). Deploy bei jedem Push auf `main`.
 - Production-Webspace bei HostEurope existiert, Deploy nur manuell (Actions → „Deploy to Production" → Run workflow).
-- Für einen erneuten Go-Live: (1) Menü-Inhalte final prüfen, (2) Datenschutz-Tab im CMS-Sheet anpassen (nennt noch Readymag als Hoster), (3) Prod-Deploy auslösen, (4) SSL-Zertifikat für yamyam-berlin.de bei HostEurope prüfen, (5) A-Records bei GoDaddy für `@` und `www` auf den HostEurope-Webspace umstellen (IP im HostEurope-KIS; `yy` zeigt aktuell auf 5.175.14.176).
+- **Achtung:** Auf dem Production-Webspace liegt noch der Stand von vor dem 2026-06-22 (Sheet-basierte Speisekarte). Vor jedem DNS-Wechsel zuerst den Prod-Deploy auslösen.
+- Für einen erneuten Go-Live: (1) Menü-PDF final prüfen, (2) Datenschutz-Tab im CMS-Sheet anpassen (nennt noch Readymag als Hoster), (3) Prod-Deploy auslösen und per `curl --resolve yamyam-berlin.de:443:5.175.14.176 https://yamyam-berlin.de/menue.html` prüfen, dass `pdf-viewer.js` drin ist, (4) A-Records bei GoDaddy für `@` und `www` auf **5.175.14.176** umstellen (HostEurope-Webspace wp654; die 80.237.130.176 aus dem Mai antwortet nicht mehr auf 443). SSL: Starfield-DV-Zertifikat für `yamyam-berlin.de` + `www` liegt dort, gültig bis 2026-11-26 (kostenpflichtig bei HostEurope, Auto-Renewal laut Bestellung — prüfen).
 - Übergabe von Aisu.Studio an YamYam am 2026-09-18 (Repo-Transfer nach designyamyam). Zugänge, die nicht im Repo liegen: Google-Cloud-Projekt mit dem Sheets-API-Key, HostEurope-FTP (Prod + Staging), GoDaddy-DNS, GA-Property, Eigentum der beiden Google Sheets.
 
 ## File Struktur
