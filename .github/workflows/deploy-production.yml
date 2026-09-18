@@ -34,6 +34,7 @@ jobs:
             --exclude-glob .vscode/ \
             --exclude-glob .DS_Store \
             --exclude-glob _archive/ \
+            --exclude-glob c19/ \
             --exclude-glob README.md \
             --exclude-glob CLAUDE.md \
             ./ /

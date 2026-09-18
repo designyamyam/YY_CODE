@@ -2,13 +2,13 @@
 
 ## Projekt
 Statische Restaurant-Website für YamYam Berlin (koreanisches Restaurant, Berlin Mitte).
-Stack: HTML/CSS/JS, Google Sheets als CMS, Hosting auf Strato.
+Stack: HTML/CSS/JS, Google Sheets als CMS, Hosting auf HostEurope (FTPS-Deploy via GitHub Actions: Push auf main → Staging, Production manuell per workflow_dispatch).
 
 ## Links
 - CMS Sheet: https://docs.google.com/spreadsheets/d/1np-pFIEK8PD8OdEOArdllTTmqnhBj2Pf4ELICj1PXMU/
 - Tasks Sheet: https://docs.google.com/spreadsheets/d/1KBvNdrkyYfWxCeHYJhRVw0jh2BqtiWQftidxrcTjyBo/
-- GitHub: https://github.com/aisustudio/YY_CODE
-- Preview: https://aisustudio.github.io/YY_CODE/
+- GitHub: https://github.com/designyamyam/YY_CODE
+- Preview: https://designyamyam.github.io/YY_CODE/
 
 ## File Struktur
 ```
