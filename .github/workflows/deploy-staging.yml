@@ -23,6 +23,17 @@ jobs:
           Disallow: /
           ROBOTS
 
+      - name: Write admin/config.php from secret (menu PDF upload password)
+        env:
+          MENU_UPLOAD_PASSWORD: ${{ secrets.MENU_UPLOAD_PASSWORD }}
+        run: |
+          if [ -n "$MENU_UPLOAD_PASSWORD" ]; then
+            HASH=$(openssl passwd -6 "$MENU_UPLOAD_PASSWORD")
+            printf "<?php\ndefine('MENU_UPLOAD_PASSWORD_HASH', '%s');\n" "$HASH" > admin/config.php
+          else
+            echo "MENU_UPLOAD_PASSWORD secret not set - admin upload stays disabled"
+          fi
+
       - name: Install lftp
         run: sudo apt-get update && sudo apt-get install -y lftp
 
@@ -47,6 +58,8 @@ jobs:
             --exclude-glob .vscode/ \
             --exclude-glob .DS_Store \
             --exclude-glob _archive/ \
+            --exclude-glob uploads/ \
+            --exclude-glob menue-paused.html \
             --exclude-glob README.md \
             --exclude-glob CLAUDE.md \
             ./ /

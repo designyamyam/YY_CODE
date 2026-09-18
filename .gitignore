@@ -20,3 +20,7 @@ _archive/
 # Local-only reports
 report.md
 fuckup_report.md
+
+# Speisekarten-Upload (siehe admin/index.php)
+admin/config.php
+uploads/
