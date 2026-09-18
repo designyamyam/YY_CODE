@@ -14,6 +14,7 @@ Stack: HTML/CSS/JS, Google Sheets als CMS, Hosting auf HostEurope (FTPS-Deploy v
 - **Die neue Site ist NICHT live.** `yamyam-berlin.de` + `www` zeigen per DNS (GoDaddy) auf Readymag (54.194.41.141), dort läuft die alte Readymag-Site.
 - Go-Live war am 2026-05-27 (DNS → HostEurope). Danach gab es Probleme mit der Korrektheit der Menü-Daten (Sheet-basierte Speisekarte), deshalb wurde **alles zurückgefahren**: DNS wieder auf Readymag.
 - Reaktion darauf: Speisekarte am 2026-06-22 auf PDF-Embed umgestellt (`menue.html` + `menue.pdf`), Sheet-Version pausiert (`menue-paused.html`, noindex).
+- **Go-Live geplant: 2026-09-30.** Speisekarte bleibt vorerst PDF; das Personal tauscht das PDF selbst über `/admin/` (siehe Abschnitt „Speisekarten-PDF-Upload“). Die Sheet-basierte Speisekarte ist abgeschaltet (nicht mehr deployt), bleibt aber im Repo als Basis für einen späteren Neubau.
 - Die vollständige neue Site liegt auf **Staging: http://yy.yamyam-berlin.de** (HostEurope, nur http, robots disallow). Deploy bei jedem Push auf `main`.
 - Production-Webspace bei HostEurope existiert, Deploy nur manuell (Actions → „Deploy to Production" → Run workflow).
 - **Achtung:** Auf dem Production-Webspace liegt noch der Stand von vor dem 2026-06-22 (Sheet-basierte Speisekarte). Vor jedem DNS-Wechsel zuerst den Prod-Deploy auslösen.
@@ -23,8 +24,13 @@ Stack: HTML/CSS/JS, Google Sheets als CMS, Hosting auf HostEurope (FTPS-Deploy v
 ## File Struktur
 ```
 index.html          ← Homepage (Seoul BG, Flugzeug, alle Sektionen)
-menue.html          ← Speisekarte (PDF-Embed, Kundenwunsch)
-menue-paused.html   ← Alte Sheet-basierte Speisekarte (pausiert, noindex)
+menue.html          ← Speisekarte (PDF via PDF.js; lädt uploads/menue.pdf, sonst menue.pdf)
+menue.pdf           ← Fallback-Speisekarte (eingecheckt); live zählt uploads/menue.pdf
+admin/index.php     ← Upload-Seite fürs Personal (Passwort → uploads/menue.pdf, hält 10 Vorversionen)
+admin/.user.ini     ← PHP-Upload-Limits für admin/
+admin/config.php    ← Passwort-Hash, schreibt der Deploy aus dem Secret (gitignored, nie committen)
+uploads/            ← nur auf dem Server, vom Deploy ausgenommen (Uploads + archive/)
+menue-paused.html   ← Alte Sheet-basierte Speisekarte — NICHT deployt, im Repo als Basis behalten
 about.html          ← Über uns (live aus Google Sheets)
 jobs.html           ← Jobs (live aus Google Sheets)
 datenschutz.html    ← Impressum & Datenschutz (live aus Google Sheets)
@@ -85,6 +91,14 @@ fonts/
 - **About:** Section Headline (H) | Section Text (P) | CTA
 - **Jobs:** Job Titel | Anstellungsart & Zeit | Vollständiger Ausschreibungstext
 - **Datenschutz:** H1 | h2 | P Strong | P
+
+## Speisekarten-PDF-Upload (Personal)
+- URL: `https://yamyam-berlin.de/admin/` (Staging: `http://yy.yamyam-berlin.de/admin/`). Passwort + PDF wählen + Hochladen.
+- `admin/index.php` prüft Passwort (`password_verify` gegen Hash aus `admin/config.php`), Magic-Bytes `%PDF-`, max. 20 MB, schreibt atomar nach `uploads/menue.pdf` und legt die Vorversion unter `uploads/archive/menue-<Zeitstempel>.pdf` ab (10 Stück).
+- `pdf-viewer.js` macht ein HEAD auf `uploads/menue.pdf`; existiert es, wird es mit `?v=<Last-Modified>` geladen (Cache-Buster), sonst `menue.pdf` aus dem Repo.
+- **Passwort** = GitHub-Secret `MENU_UPLOAD_PASSWORD` (Settings → Secrets and variables → Actions). Der Deploy hasht es (`openssl passwd -6`) und schreibt `admin/config.php`. Passwort ändern = Secret ändern + Deploy auslösen. Ohne Secret ist der Upload deaktiviert.
+- Beide Workflows schließen `uploads/` und `menue-paused.html` vom Mirror aus — ein Deploy überschreibt Uploads nie.
+- Um wieder auf die Sheet-Speisekarte zu wechseln: `menue-paused.html` → `menue.html` zurückbenennen, Exclude im Workflow entfernen, Menü-Daten im Sheet vorher verifizieren (das war der Grund für den Rollback).
 
 ## CMS Workflow
 Kundin ändert Google Sheet → Änderungen sofort live (kein Push nötig).
