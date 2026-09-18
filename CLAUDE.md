@@ -104,7 +104,7 @@ fonts/
 - URL: `https://yamyam-berlin.de/admin/` (Staging: `http://yy.yamyam-berlin.de/admin/`). Passwort + PDF wählen + Hochladen.
 - `admin/index.php` prüft Passwort (`password_verify` gegen Hash aus `admin/config.php`), Magic-Bytes `%PDF-`, max. 20 MB, schreibt atomar nach `uploads/menue.pdf` und legt die Vorversion unter `uploads/archive/menue-<Zeitstempel>.pdf` ab (10 Stück).
 - `pdf-viewer.js` macht ein HEAD auf `uploads/menue.pdf`; existiert es, wird es mit `?v=<Last-Modified>` geladen (Cache-Buster), sonst `menue.pdf` aus dem Repo.
-- **Passwort** = GitHub-Secret `MENU_UPLOAD_PASSWORD` (Settings → Secrets and variables → Actions). Der Deploy hasht es (`openssl passwd -6`) und schreibt `admin/config.php`. Passwort ändern = Secret ändern + Deploy auslösen. Ohne Secret ist der Upload deaktiviert.
+- **Passwort** = GitHub-Secrets (Settings → Secrets and variables → Actions): `MENU_UPLOAD_PASSWORD` für Production, `MENU_UPLOAD_PASSWORD_STAGING` für Staging (getrennt, weil Staging kein SSL hat und das Passwort dort im Klartext übertragen wird). Der Deploy hasht es (`openssl passwd -6`) und schreibt `admin/config.php`. Passwort ändern = Secret ändern + Deploy auslösen. Ohne Secret ist der Upload auf dem jeweiligen Webspace deaktiviert.
 - Beide Workflows schließen `uploads/` und `menue-paused.html` vom Mirror aus — ein Deploy überschreibt Uploads nie.
 - Um wieder auf die Sheet-Speisekarte zu wechseln: `menue-paused.html` → `menue.html` zurückbenennen, Exclude im Workflow entfernen, Menü-Daten im Sheet vorher verifizieren (das war der Grund für den Rollback).
 

@@ -23,15 +23,16 @@ jobs:
           Disallow: /
           ROBOTS
 
-      - name: Write admin/config.php from secret (menu PDF upload password)
+      # Staging hat kein SSL - deshalb ein eigenes Passwort, damit das Produktiv-Passwort nie über http geht
+      - name: Write admin/config.php from secret (menu PDF upload password, staging)
         env:
-          MENU_UPLOAD_PASSWORD: ${{ secrets.MENU_UPLOAD_PASSWORD }}
+          MENU_UPLOAD_PASSWORD: ${{ secrets.MENU_UPLOAD_PASSWORD_STAGING }}
         run: |
           if [ -n "$MENU_UPLOAD_PASSWORD" ]; then
             HASH=$(openssl passwd -6 "$MENU_UPLOAD_PASSWORD")
             printf "<?php\ndefine('MENU_UPLOAD_PASSWORD_HASH', '%s');\n" "$HASH" > admin/config.php
           else
-            echo "MENU_UPLOAD_PASSWORD secret not set - admin upload stays disabled"
+            echo "MENU_UPLOAD_PASSWORD_STAGING secret not set - admin upload stays disabled on staging"
           fi
 
       - name: Install lftp
