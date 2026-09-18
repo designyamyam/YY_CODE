@@ -10,6 +10,15 @@ Stack: HTML/CSS/JS, Google Sheets als CMS, Hosting auf HostEurope (FTPS-Deploy v
 - GitHub: https://github.com/designyamyam/YY_CODE
 - Preview: https://designyamyam.github.io/YY_CODE/
 
+## Status (Stand 2026-09-18) — WICHTIG vor jeder Arbeit lesen
+- **Die neue Site ist NICHT live.** `yamyam-berlin.de` + `www` zeigen per DNS (GoDaddy) auf Readymag (54.194.41.141), dort läuft die alte Readymag-Site.
+- Go-Live war am 2026-05-27 (DNS → HostEurope). Danach gab es Probleme mit der Korrektheit der Menü-Daten (Sheet-basierte Speisekarte), deshalb wurde **alles zurückgefahren**: DNS wieder auf Readymag.
+- Reaktion darauf: Speisekarte am 2026-06-22 auf PDF-Embed umgestellt (`menue.html` + `menue.pdf`), Sheet-Version pausiert (`menue-paused.html`, noindex).
+- Die vollständige neue Site liegt auf **Staging: http://yy.yamyam-berlin.de** (HostEurope, nur http, robots disallow). Deploy bei jedem Push auf `main`.
+- Production-Webspace bei HostEurope existiert, Deploy nur manuell (Actions → „Deploy to Production" → Run workflow).
+- Für einen erneuten Go-Live: (1) Menü-Inhalte final prüfen, (2) Datenschutz-Tab im CMS-Sheet anpassen (nennt noch Readymag als Hoster), (3) Prod-Deploy auslösen, (4) SSL-Zertifikat für yamyam-berlin.de bei HostEurope prüfen, (5) A-Records bei GoDaddy für `@` und `www` auf den HostEurope-Webspace umstellen (IP im HostEurope-KIS; `yy` zeigt aktuell auf 5.175.14.176).
+- Übergabe von Aisu.Studio an YamYam am 2026-09-18 (Repo-Transfer nach designyamyam). Zugänge, die nicht im Repo liegen: Google-Cloud-Projekt mit dem Sheets-API-Key, HostEurope-FTP (Prod + Staging), GoDaddy-DNS, GA-Property, Eigentum der beiden Google Sheets.
+
 ## File Struktur
 ```
 index.html          ← Homepage (Seoul BG, Flugzeug, alle Sektionen)
