@@ -35,16 +35,61 @@ function pruneArchive(string $dir): void
     }
 }
 
-function handleUpload(bool $configured, string $uploadsDir, string $archiveDir, string $target): array
+function checkPassword(bool $configured): ?array
 {
     if (!$configured) {
         return ['error', 'Der Upload ist noch nicht eingerichtet (Passwort fehlt auf dem Server).'];
     }
-
     $password = (string)($_POST['password'] ?? '');
     if ($password === '' || !password_verify($password, MENU_UPLOAD_PASSWORD_HASH)) {
         sleep(2); // bremst Durchprobieren
         return ['error', 'Falsches Passwort.'];
+    }
+    return null;
+}
+
+// Frühere Version wiederherstellen oder löschen. $action = "restore:<datei>" | "delete:<datei>"
+function handleArchiveAction(string $action, bool $configured, string $uploadsDir, string $archiveDir, string $target): array
+{
+    if ($err = checkPassword($configured)) {
+        return $err;
+    }
+    if (!preg_match('/^(restore|delete):(menue-\d{8}-\d{6}\.pdf)$/', $action, $m)) {
+        return ['error', 'Ungültige Aktion.'];
+    }
+    [, $what, $name] = $m;
+    $path = $archiveDir . '/' . $name;           // Name ist durch das Muster auf den Archivordner beschränkt
+    if (!is_file($path)) {
+        return ['error', 'Diese Version gibt es nicht mehr.'];
+    }
+    $when = DateTime::createFromFormat('Ymd-His', substr($name, 6, 15));
+    $label = $when ? $when->format('d.m.Y, H:i') : $name;
+
+    if ($what === 'delete') {
+        return @unlink($path)
+            ? ['ok', 'Version vom ' . $label . ' gelöscht.']
+            : ['error', 'Die Version konnte nicht gelöscht werden.'];
+    }
+
+    // restore: aktuelle Karte ins Archiv, Archivkopie atomar nach uploads/menue.pdf
+    if (is_file($target)) {
+        @copy($target, $archiveDir . '/menue-' . date('Ymd-His', (int)filemtime($target)) . '.pdf');
+    }
+    $tmp = $uploadsDir . '/menue.' . bin2hex(random_bytes(4)) . '.tmp';
+    if (!copy($path, $tmp) || !rename($tmp, $target)) {
+        @unlink($tmp);
+        return ['error', 'Die Version konnte nicht wiederhergestellt werden.'];
+    }
+    @chmod($target, 0644);
+    touch($target); // neuer Zeitstempel → Cache-Buster im Viewer greift
+    pruneArchive($archiveDir);
+    return ['ok', 'Version vom ' . $label . ' ist wieder online.'];
+}
+
+function handleUpload(bool $configured, string $uploadsDir, string $archiveDir, string $target): array
+{
+    if ($err = checkPassword($configured)) {
+        return $err;
     }
 
     $file = $_FILES['pdf'] ?? null;
@@ -99,7 +144,10 @@ function handleUpload(bool $configured, string $uploadsDir, string $archiveDir, 
 
 $message = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $message = handleUpload($configured, $uploadsDir, $archiveDir, $target);
+    $action  = (string)($_POST['action'] ?? 'upload');
+    $message = $action === 'upload'
+        ? handleUpload($configured, $uploadsDir, $archiveDir, $target)
+        : handleArchiveAction($action, $configured, $uploadsDir, $archiveDir, $target);
 }
 
 $current = is_file($target) ? $target : (is_file($fallback) ? $fallback : null);
@@ -171,9 +219,24 @@ header('X-Robots-Tag: noindex, nofollow');
     .admin__help { margin-top: 40px; color: var(--gray-text); font-size: 14px; line-height: 1.6; }
     .admin__help ul { padding-left: 18px; }
     .admin__help li { margin-bottom: 4px; }
-    .admin__archive { margin-top: 32px; font-size: 14px; color: var(--gray-text); }
-    .admin__archive a { color: var(--red); }
-    .admin__archive a:hover { color: var(--black); }
+    .admin__archive { margin-top: 40px; font-size: 14px; color: var(--gray-text); }
+    .admin__archive h2 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 20px;
+      letter-spacing: var(--tracking-display);
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 4px;
+    }
+    .admin__archive-hint { margin-bottom: 12px; }
+    .admin__archive ul { padding-left: 20px; }            /* echte Bullet-Liste, neueste zuerst */
+    .admin__archive li { padding: 6px 0; line-height: 1.5; }
+    .admin__archive-date { color: var(--black); font-weight: 700; margin-right: 12px; }
+    .admin__archive a,
+    .admin__archive button { font: inherit; color: var(--red); text-decoration: underline; padding: 0; margin-right: 12px; }
+    .admin__archive a:hover,
+    .admin__archive button:hover { color: var(--black); }
   </style>
 </head>
 <body>
@@ -198,31 +261,43 @@ header('X-Robots-Tag: noindex, nofollow');
       <label for="pdf">Neue Speisekarte (PDF, max. 20 MB)</label>
       <input type="file" id="pdf" name="pdf" accept="application/pdf,.pdf" required>
       <div class="admin__actions">
-        <button type="submit" class="btn-outline">Hochladen</button>
+        <button type="submit" name="action" value="upload" class="btn-outline">Hochladen</button>
         <a href="../menue.html" target="_blank" rel="noopener" class="btn-outline">Speisekarte ansehen <img class="btn-arrow" src="../images/icons/arrow.svg" alt=""></a>
       </div>
+
+      <?php if ($archive): ?>
+        <div class="admin__archive">
+          <h2>Frühere Versionen</h2>
+          <p class="admin__archive-hint">Wiederherstellen und Löschen brauchen das Passwort von oben.</p>
+          <ul>
+            <?php foreach ($archive as $path):
+              $name  = basename($path);
+              $when  = DateTime::createFromFormat('Ymd-His', substr($name, 6, 15));
+              $label = $when ? $when->format('d.m.Y, H:i') . ' Uhr' : $name;
+              $esc   = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+            ?>
+              <li>
+                <span class="admin__archive-date"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
+                <a href="../uploads/archive/<?= rawurlencode($name) ?>" target="_blank" rel="noopener">ansehen</a>
+                <button type="submit" name="action" value="restore:<?= $esc ?>" formnovalidate
+                        onclick="return confirm('Diese Version wieder online stellen? Die aktuelle Karte wandert ins Archiv.')">wiederherstellen</button>
+                <button type="submit" name="action" value="delete:<?= $esc ?>" formnovalidate
+                        onclick="return confirm('Diese Version endgültig löschen?')">löschen</button>
+              </li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      <?php endif; ?>
     </form>
 
     <div class="admin__help">
       <ul>
         <li>Die neue Datei ersetzt die Speisekarte sofort auf <a href="../menue.html">yamyam-berlin.de/menue.html</a>.</li>
-        <li>Die bisherige Version wird automatisch aufgehoben (die letzten <?= KEEP_VERSIONS ?> Stände).</li>
+        <li>Die bisherige Version wird automatisch aufgehoben (die letzten <?= KEEP_VERSIONS ?> Stände) und kann unten mit einem Klick wieder online gestellt oder gelöscht werden.</li>
         <li>Wenn die Seite die alte Karte zeigt: einmal neu laden.</li>
       </ul>
     </div>
 
-    <?php if ($archive): ?>
-      <div class="admin__archive">
-        Frühere Versionen:
-        <?php foreach ($archive as $i => $path):
-          $name  = basename($path);
-          $when  = DateTime::createFromFormat('Ymd-His', substr($name, 6, 15));
-          $label = $when ? $when->format('d.m.Y, H:i') : $name;
-        ?>
-          <?= $i ? '·' : '' ?> <a href="../uploads/archive/<?= rawurlencode($name) ?>" target="_blank" rel="noopener"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></a>
-        <?php endforeach; ?>
-      </div>
-    <?php endif; ?>
   </main>
 </body>
 </html>
