@@ -130,6 +130,8 @@ header('X-Robots-Tag: noindex, nofollow');
       color: var(--black);
     }
     .admin__logo { display: block; width: 72px; margin-bottom: 32px; }
+    .admin__logo img { display: block; width: 100%; }
+    .admin__logo:hover img { filter: brightness(0); }   /* wie das Nav-Logo: hover = schwarz */
     .admin h1 {
       font-family: var(--font-display);
       font-weight: 500;
@@ -175,7 +177,7 @@ header('X-Robots-Tag: noindex, nofollow');
 </head>
 <body>
   <main class="admin" role="main">
-    <img class="admin__logo" src="../images/logos/YY_Logo_Red.svg" alt="YamYam Berlin">
+    <a href="../index.html" class="admin__logo" aria-label="Zur Startseite"><img src="../images/logos/YY_Logo_Red.svg" alt="YamYam Berlin"></a>
     <h1>Speisekarte aktualisieren</h1>
     <p class="admin__status">
       Aktuelle Speisekarte: Stand <?= htmlspecialchars($currentStamp, ENT_QUOTES, 'UTF-8') ?>
