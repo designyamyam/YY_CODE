@@ -8,7 +8,7 @@
 .yy-cb {
   position: fixed;
   right: 20px;
-  bottom: 84px;           /* über der Tebi-Reservierungs-Pill (48px + 16px Abstand, unten rechts) */
+  bottom: 20px;
   z-index: 9000;
   width: calc(100vw - 40px);
   max-width: 420px;
@@ -221,7 +221,7 @@
   .yy-cb {
     right: 16px;
     left: 16px;
-    bottom: 80px;         /* über der Tebi-Pill (48px + 16px), sonst liegt sie auf dem Settings-Button */
+    bottom: 16px;
     width: auto;
     max-width: none;
     padding: 18px 18px 16px;

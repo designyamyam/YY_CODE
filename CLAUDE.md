@@ -94,9 +94,9 @@ fonts/
 
 ## Reservierung — Tebi-Widget
 - Snippet steht auf **jeder Seite** direkt vor `</body>` (auch 404 + menue-paused): `<script src="https://live.tebi.co/ecom/widget-manager.js" data-widget-token="…" data-analytics-passive="true" id="tebi" data-no-minify="1">`. Der Token ist ein öffentlicher Widget-Token, gehört ins HTML.
-- Das Script hängt eine **Pill unten rechts** ein (`#tebi_rs_01`, fixed, z-index 10011, 54×48 px, Farbe kommt aus dem Tebi-Backend) und bindet alle Links mit `href="#tebi-reservations"` (bzw. `#tebi-takeaway`, `#tebi-giftcards`) so, dass sie das Widget öffnen. Der Nav-Link RESERVE nutzt genau das; das Burger-Script schließt dabei das Mobile-Menü.
+- Das Script hängt eine **Pill unten rechts** ein (`#tebi_rs_01`, fixed, z-index 10011, 54×48 px, Farbe/Text kommen aus dem Tebi-Backend) und bindet alle Links mit `href="#tebi-reservations"` (bzw. `#tebi-takeaway`, `#tebi-giftcards`) so, dass sie das Widget öffnen. Der Nav-Link RESERVE nutzt genau das; das Burger-Script schließt dabei das Mobile-Menü.
+- **Die Pill ist ausgeblendet** (Entscheidung 2026-09-18): `reservations.js` setzt den Rahmen auf `visibility:hidden`, solange seine Höhe ≤ 48px ist, und zeigt ihn erst im aufgeklappten Zustand. Pill wieder einschalten = `reservations.js` aus den Seiten nehmen (dann Cookie-Banner wieder über die Pill heben, `bottom: 84px` / mobil `80px`).
 - `data-analytics-passive="true"` ist Pflicht: ohne das lädt Tebi bei im Tebi-Backend hinterlegten Tracking-IDs selbst gtag.js/Meta-Pixel — an unserem Cookie-Banner vorbei.
-- `cookie-banner.css`: Banner steht mit `bottom: 84px` über der Pill, damit sich beide nicht überlagern.
 - Datenschutz-Tab im CMS-Sheet: Absatz „Onlinereservierung" nennt noch resmio → auf Tebi umschreiben (Anbieter, Sitz, Datenschutz-Link von Tebi einholen).
 - Reservierung vorher: resmio-Widget (`app.resmio.com/yamyam-berlin/widget`), am 2026-09-18 ersetzt.
 
