@@ -8,7 +8,7 @@
 .yy-cb {
   position: fixed;
   right: 20px;
-  bottom: 20px;
+  bottom: 84px;           /* über der Tebi-Reservierungs-Pill (48px + 16px Abstand, unten rechts) */
   z-index: 9000;
   width: calc(100vw - 40px);
   max-width: 420px;

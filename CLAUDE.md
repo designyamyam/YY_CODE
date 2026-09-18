@@ -82,7 +82,7 @@ fonts/
 - position: fixed, background: var(--bg)
 - Grid: 1fr auto 1fr — Logo zentriert
 - Links links: MENUE · ABOUT · JOBS
-- Rechts rechts: RESERVE · ORDER ONLINE · IG-Icon · Burger (mobile)
+- Rechts rechts: RESERVE (öffnet Tebi-Widget, `href="#tebi-reservations"`) · ORDER ONLINE (Wolt) · IG-Icon · Burger (mobile)
 - Burger: images/icons/burger.png, nur auf mobile sichtbar
 
 ## Google Sheets Tabs & Spaltenstruktur
@@ -91,6 +91,14 @@ fonts/
 - **About:** Section Headline (H) | Section Text (P) | CTA
 - **Jobs:** Job Titel | Anstellungsart & Zeit | Vollständiger Ausschreibungstext
 - **Datenschutz:** H1 | h2 | P Strong | P
+
+## Reservierung — Tebi-Widget
+- Snippet steht auf **jeder Seite** direkt vor `</body>` (auch 404 + menue-paused): `<script src="https://live.tebi.co/ecom/widget-manager.js" data-widget-token="…" data-analytics-passive="true" id="tebi" data-no-minify="1">`. Der Token ist ein öffentlicher Widget-Token, gehört ins HTML.
+- Das Script hängt eine **Pill unten rechts** ein (`#tebi_rs_01`, fixed, z-index 10011, 54×48 px, Farbe kommt aus dem Tebi-Backend) und bindet alle Links mit `href="#tebi-reservations"` (bzw. `#tebi-takeaway`, `#tebi-giftcards`) so, dass sie das Widget öffnen. Der Nav-Link RESERVE nutzt genau das; das Burger-Script schließt dabei das Mobile-Menü.
+- `data-analytics-passive="true"` ist Pflicht: ohne das lädt Tebi bei im Tebi-Backend hinterlegten Tracking-IDs selbst gtag.js/Meta-Pixel — an unserem Cookie-Banner vorbei.
+- `cookie-banner.css`: Banner steht mit `bottom: 84px` über der Pill, damit sich beide nicht überlagern.
+- Datenschutz-Tab im CMS-Sheet: Absatz „Onlinereservierung" nennt noch resmio → auf Tebi umschreiben (Anbieter, Sitz, Datenschutz-Link von Tebi einholen).
+- Reservierung vorher: resmio-Widget (`app.resmio.com/yamyam-berlin/widget`), am 2026-09-18 ersetzt.
 
 ## Speisekarten-PDF-Upload (Personal)
 - URL: `https://yamyam-berlin.de/admin/` (Staging: `http://yy.yamyam-berlin.de/admin/`). Passwort + PDF wählen + Hochladen.

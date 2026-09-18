@@ -145,7 +145,7 @@
         <li><a href="jobs.html" class="active">Jobs</a></li>
       </ul>
       <ul class="site-nav__links site-nav__links--right" role="list">
-        <li><a href="https://app.resmio.com/yamyam-berlin/widget" target="_blank" rel="noopener">Reserve</a></li>
+        <li><a href="#tebi-reservations">Reserve</a></li>
         <li><a href="https://wolt.com/en/deu/berlin/restaurant/yamyam" target="_blank" rel="noopener">Order Online</a></li>
         <li class="mobile-only"><a href="datenschutz.html">Impressum &amp; Datenschutz</a></li>
         <li>
@@ -202,6 +202,16 @@
         const open = navMenu.classList.toggle('open');
         this.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
+      // Reserve öffnet das Tebi-Widget (Hash-Link, siehe Snippet vor   <!-- Tebi Reservierungs-Widget: Pill unten rechts + öffnet sich über Links mit href="#tebi-reservations".
+       data-analytics-passive: Tebi darf keine eigenen Google/Meta-Tags laden (Cookie-Consent liegt bei uns). -->
+  <script src="https://live.tebi.co/ecom/widget-manager.js" data-widget-token="768854_66c402aaff7640c94bb29350c259dff28d27b76e03d6a0ce54c68b8d1ab280e5" data-analytics-passive="true" id="tebi" data-no-minify="1"></script>
+</body>) — Burger-Menü dabei schließen
+      navMenu.querySelectorAll('a[href^="#tebi-"]').forEach(function (link) {
+        link.addEventListener('click', function() {
+          navMenu.classList.remove('open');
+          burger.setAttribute('aria-expanded', 'false');
+        });
+      });
     }
   </script>
 
@@ -235,5 +245,8 @@
   </script>
 
   <script src="cookie-banner.js" defer></script>
+  <!-- Tebi Reservierungs-Widget: Pill unten rechts + öffnet sich über Links mit href="#tebi-reservations".
+       data-analytics-passive: Tebi darf keine eigenen Google/Meta-Tags laden (Cookie-Consent liegt bei uns). -->
+  <script src="https://live.tebi.co/ecom/widget-manager.js" data-widget-token="768854_66c402aaff7640c94bb29350c259dff28d27b76e03d6a0ce54c68b8d1ab280e5" data-analytics-passive="true" id="tebi" data-no-minify="1"></script>
 </body>
 </html>
