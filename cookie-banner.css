@@ -221,7 +221,7 @@
   .yy-cb {
     right: 16px;
     left: 16px;
-    bottom: 16px;
+    bottom: 80px;         /* über der Tebi-Pill (48px + 16px), sonst liegt sie auf dem Settings-Button */
     width: auto;
     max-width: none;
     padding: 18px 18px 16px;
