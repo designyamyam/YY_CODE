@@ -2,7 +2,7 @@
   // Vom Personal hochgeladene Karte (admin/) hat Vorrang, sonst das eingecheckte menue.pdf.
   const UPLOAD_URL = 'uploads/menue.pdf';
   const FALLBACK_URL = 'menue.pdf';
-  const WORKER_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+  const WORKER_URL = 'vendor/pdfjs/pdf.worker.min.js'; // PDF.js 3.11.174, selbst gehostet (kein CDN-Request → DSGVO)
   const container = document.getElementById('pdf-viewer');
   if (!container || typeof pdfjsLib === 'undefined') return;
 
