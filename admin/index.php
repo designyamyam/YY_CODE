@@ -158,6 +158,7 @@ header('X-Robots-Tag: noindex, nofollow');
       color: var(--black);
     }
     .admin input:focus { outline: 2px solid var(--red); outline-offset: 1px; }
+    .admin__actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
     .admin__msg {
       padding: 12px 16px;
       margin-bottom: 24px;
@@ -196,7 +197,10 @@ header('X-Robots-Tag: noindex, nofollow');
       <input type="password" id="password" name="password" required autocomplete="current-password">
       <label for="pdf">Neue Speisekarte (PDF, max. 20 MB)</label>
       <input type="file" id="pdf" name="pdf" accept="application/pdf,.pdf" required>
-      <button type="submit" class="btn-outline">Hochladen</button>
+      <div class="admin__actions">
+        <button type="submit" class="btn-outline">Hochladen</button>
+        <a href="../menue.html" target="_blank" rel="noopener" class="btn-outline">Speisekarte ansehen <img class="btn-arrow" src="../images/icons/arrow.svg" alt=""></a>
+      </div>
     </form>
 
     <div class="admin__help">
