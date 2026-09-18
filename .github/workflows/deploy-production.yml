@@ -50,5 +50,6 @@ jobs:
             --exclude-glob c19/ \
             --exclude-glob README.md \
             --exclude-glob CLAUDE.md \
-            ./ /
+            ./ /;
+          rm -f menue-paused.html || echo menue-paused.html-already-removed
           "
