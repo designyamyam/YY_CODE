@@ -24,15 +24,6 @@
       width: 100%;
       height: auto;
     }
-    /* Desktop: eingebauter PDF-Viewer des Browsers */
-    .pdf-native {
-      display: block;
-      width: 100%;
-      height: calc(100vh - var(--nav-height) - 48px);
-      min-height: 480px;
-      border: 0;
-      background: var(--bg);
-    }
     .pdf-error {
       font-family: var(--font-body);
       font-size: 14px;
@@ -125,6 +116,7 @@
     }
   </script>
 
+  <script src="vendor/pdfjs/pdf.min.js"></script>
   <script src="pdf-viewer.js"></script>
   <script src="cookie-banner.js" defer></script>
   <!-- Tebi Reservierungs-Widget: Pill unten rechts + öffnet sich über Links mit href="#tebi-reservations".
