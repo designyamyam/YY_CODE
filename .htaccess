@@ -1,0 +1,17 @@
+# YamYam Berlin — Apache-Konfiguration (HostEurope)
+
+# Eigene 404-Seite statt Apache-Standard ("Object not found!")
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # http → https, aber NUR für die Live-Domain.
+  # Staging (yy.yamyam-berlin.de) hat kein Zertifikat und muss auf http erreichbar bleiben.
+  # Wichtig fürs Tebi-Reservierungs-Widget: in einer http-Seite ist das https-iframe
+  # kein "secure context", das Widget bleibt dann leer.
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteCond %{HTTP_HOST} ^(www\.)?yamyam-berlin\.de$ [NC]
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</IfModule>
