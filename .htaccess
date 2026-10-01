@@ -6,6 +6,10 @@ ErrorDocument 404 /404.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # QR-Codes im Restaurant zeigen auf die Speisekarte. /menue/ liegt als eigener Ordner
+  # mit Weiterleitungsseite im Repo; /menu/ (ohne "e") faengt die haeufige Schreibweise ab.
+  RewriteRule ^menu/?$ /menue.html [R=301,L]
+
   # http → https, aber NUR für die Live-Domain.
   # Staging (yy.yamyam-berlin.de) hat kein Zertifikat und muss auf http erreichbar bleiben.
   # Wichtig fürs Tebi-Reservierungs-Widget: in einer http-Seite ist das https-iframe

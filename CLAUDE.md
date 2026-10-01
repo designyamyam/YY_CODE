@@ -34,6 +34,8 @@ admin/index.php     ← Upload-Seite fürs Personal (Passwort → uploads/menue.
 admin/.user.ini     ← PHP-Upload-Limits für admin/
 admin/config.php    ← Passwort-Hash, schreibt der Deploy aus dem Secret (gitignored, nie committen)
 uploads/            ← nur auf dem Server, vom Deploy ausgenommen (Uploads + archive/)
+menue/index.html    ← Ziel der QR-Codes im Restaurant: leitet auf menue.html weiter
+                      (Query und Anker bleiben erhalten). NICHT loeschen - die Codes sind gedruckt.
 menue-paused.html   ← Alte Sheet-basierte Speisekarte — NICHT deployt, im Repo als Basis behalten
 about.html          ← Über uns (live aus Google Sheets)
 jobs.html           ← Jobs (live aus Google Sheets)
