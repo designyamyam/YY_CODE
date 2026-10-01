@@ -123,6 +123,20 @@ fonts/
 - Beide Workflows schließen `uploads/` und `menue-paused.html` vom Mirror aus — ein Deploy überschreibt Uploads nie.
 - Um wieder auf die Sheet-Speisekarte zu wechseln: `menue-paused.html` → `menue.html` zurückbenennen, Exclude im Workflow entfernen, Menü-Daten im Sheet vorher verifizieren (das war der Grund für den Rollback).
 
+## WICHTIG: Nie direkt auf dem Webspace arbeiten
+Beide Deploys spiegeln das Repo mit `mirror -R --delete` auf den Server. **Alles, was nur auf dem
+Webspace liegt und nicht im Repo ist, wird beim naechsten Deploy geloescht** - ausgenommen sind
+ausschliesslich `uploads/` und `c19/`.
+
+Passiert ist das bereits: Jemand hat den Ordner `menue/` per FTP angelegt, weil die gedruckten
+QR-Codes im Restaurant ins Leere liefen, ihn aber nicht ins Repo uebernommen. Der naechste Deploy
+haette ihn wieder entfernt. Seit 2026-10-01 liegt er im Repo.
+
+Wer etwas schnell direkt auf dem Server fixt: **danach sofort ins Repo committen**, sonst ist es
+beim naechsten Deploy weg. Pruefen laesst sich der Unterschied mit
+`curl --resolve yamyam-berlin.de:443:5.175.14.176 https://yamyam-berlin.de/<datei>` gegen die
+lokale Datei.
+
 ## CMS Workflow
 Kundin ändert Google Sheet → Änderungen sofort live (kein Push nötig).
 Bilder müssen noch manuell via Git hochgeladen werden (Cloudinary geplant).
